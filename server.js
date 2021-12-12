@@ -1,6 +1,19 @@
 const express = require("express");
 const app = express();
 
+const d = new Date();
+let day = d.getDay();
+let hour = d.getHours();
+const checkpointmiddleware = (req, res, next) => {
+  let authorized = true;
+  (day === 0 || day === 2 || day === 3 || day === 4 || day === 5) &&
+  9 <= hour <= 16
+    ? (authorized = true)
+    : (authorized = false);
+  authorized ? next() : res.status(401).send("you are not authorized");
+};
+app.use(checkpointmiddleware);
+console.log(day);
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/home.html");
 });
